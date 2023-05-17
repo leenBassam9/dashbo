@@ -29,7 +29,7 @@ function App() {
             <Topbar setIsSidebar={setIsSidebar} />
             <Routes>
               <Route path="/" element={<Dashboard />} />
-              <Route path="/team" element={<Team />} />
+              <Route path="/tteam" element={<Team />} />
               <Route path="/users" element={<Users />} />
               <Route path="/posts" element={<Posts />} />
               <Route path="/form" element={<Form />} />
