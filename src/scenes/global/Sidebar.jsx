@@ -9,14 +9,13 @@ import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import "../../index.css";
+
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -93,13 +92,15 @@ const Sidebar = () => {
             {!isCollapsed && (
               <Box mb="25px">
                 <Box display="flex" justifyContent="center" alignItems="center">
+                  {/* <a href="/profile"> */}
                   <img
-                    alt="profile-user"
+                    src={`../../assets/user.png`}
+                    alt="progile-pic."
                     width="100px"
                     height="100px"
-                    src={`../../assets/user.png`}
                     style={{ cursor: "pointer", borderRadius: "50%" }}
                   />
+                  {/* </a> */}
                 </Box>
                 <Box textAlign="center">
                   <Typography
@@ -118,6 +119,13 @@ const Sidebar = () => {
             )}
 
             <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+              <Item
+                title="Profile"
+                to="/profile"
+                icon={<PersonOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
               <Item
                 title="Dashboard"
                 to="/"
@@ -151,6 +159,13 @@ const Sidebar = () => {
                 title="Manage Posts"
                 to="/posts"
                 icon={<ReceiptOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Manage Catergory"
+                to="/category"
+                icon={<PeopleOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
               />

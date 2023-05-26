@@ -10,8 +10,10 @@ import GeographyChart from "../../components/GeographyChart";
 import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
+import { useState } from "react";
 
 const Dashboard = () => {
+  // const [visitor, setVisitor] = useState(null);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -19,10 +21,7 @@ const Dashboard = () => {
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header
-          title="Dakesh Dashboard"
-          // subtitle="Welcome to your dashboard"
-        />
+        <Header title="Dakesh Dashboard" subtitle="Welcome to your dashboard" />
       </Box>
 
       {/* GRID & CHARTS */}
@@ -133,7 +132,7 @@ const Dashboard = () => {
           overflow="auto"
         >
           <Box
-          // height={"100px"}
+            // height={"100px"}
             display="flex"
             justifyContent="space-between"
             alignItems="center"

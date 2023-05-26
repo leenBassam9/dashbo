@@ -3,52 +3,27 @@ import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { mockDataTeam } from "../../data/mockData";
 import Header from "../../components/Header";
+import { useEffect } from "react";
 
-const Team = () => {
+const Category = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
-  //   const handleDelete = (id) => {
-  //     const newPosts = posts.filter((post) => post.id !== id);
-  //     setPosts(newPosts);
-  //   };
-  //   useEffect(() => {
-  //      fetch('http://localhost:8000/api/posts')
-  //       .then((res) => {
-  //         return res.json();
-  //       })
-  //       .then((data) => {
-  //         console.log(data);
-  //       });
-  //   });
   const columns = [
     { field: "id", headerName: "ID" },
     {
-      field: "name",
-      headerName: "Name",
+      field: " product name",
+      headerName: "Product Name",
     },
 
     {
-      field: "email",
-      headerName: "Email",
+      field: "product user",
+      headerName: "Product User",
     },
-    // {
-    //   field: "accessLevel",
-    //   headerName: "Access Level",
-    //   flex: 2,
-    //   renderCell: ({ row: { access } }) => {
-    //     return (
-    //       <Box p="5px" display="flex">
-    //         {access}
-    //       </Box>
-    //     );
-    //   },
-    // },
   ];
 
   return (
     <Box m="20px">
-      <Header title="TEAM" subtitle="Managing the Team Members" />
+      <Header title="Category" subtitle="Managing the categories " />
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -84,4 +59,4 @@ const Team = () => {
   );
 };
 
-export default Team;
+export default Category;

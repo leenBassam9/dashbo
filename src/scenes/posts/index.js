@@ -1,38 +1,40 @@
-import { Box } from "@mui/material";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { Box, Typography, useTheme } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { DataUsers } from "../../data/mockData";
+import { mockDataTeam } from "../../data/mockData";
 import Header from "../../components/Header";
-import { useTheme } from "@mui/material";
-
-const Users = () => {
+import { useState } from "react";
+import { useEffect } from "react";
+const Posts = () => {
+  const [posts, setPosts] = useState([]);
+  const fetchDate = async () => {
+    await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then((data) => setPosts(data));
+  };
+  useEffect(() => {
+    fetchDate();
+  }, []);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
   const columns = [
-    { field: "id", headerName: "ID", flex: 0.5 },
+    { field: "id", headerName: "ID" },
     {
-      field: "name",
-      headerName: "Name",
-      flex: 1,
-      cellClassName: "name-column--cell",
+      field: "title",
+      headerName: "Product Name",
     },
 
     {
-      field: "email",
-      headerName: "Email",
-      flex: 1,
-    },
-    {
-      field: "address",
-      headerName: "Address",
-      flex: 1,
+      field: "location",
+      headerName: "Product User",
     },
   ];
 
   return (
     <Box m="20px">
-      <Header title=" Our Users" />
+      <Header title="POSTS" subtitle="Managing the Posts " />
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -60,19 +62,12 @@ const Users = () => {
           "& .MuiCheckbox-root": {
             color: `${colors.greenAccent[200]} !important`,
           },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${colors.grey[100]} !important`,
-          },
         }}
       >
-        <DataGrid
-          rows={DataUsers}
-          columns={columns}
-          components={{ Toolbar: GridToolbar }}
-        />
+        <DataGrid checkboxSelection rows={posts} columns={columns} />
       </Box>
     </Box>
   );
 };
 
-export default Users;
+export default Posts;

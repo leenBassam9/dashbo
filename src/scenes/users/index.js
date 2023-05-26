@@ -1,40 +1,53 @@
-import { Box, Typography, useTheme } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { Box } from "@mui/material";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { mockDataTeam } from "../../data/mockData";
+import { DataUsers } from "../../data/mockData";
 import Header from "../../components/Header";
+import { useTheme } from "@mui/material";
+import { useState, useEffect } from "react";
 
-const Team = () => {
+const Users = () => {
+  const [users, setUsers] = useState([]);
+  const fetchDate = async () => {
+    // http://localhost:8000/api/ShowUserProfile
+    await fetch("https://jsonplaceholder.typicode.com/posts", {
+      method: "GET",
+    })
+      .then((response) => response.json())
+
+      .then((data) => console.log(data));
+  };
+  useEffect(() => {
+    fetchDate();
+  }, []);
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
   const columns = [
-    { field: "id", headerName: "ID" },
+    { field: "id", headerName: "ID", flex: 0.5 },
     {
       field: "name",
       headerName: "Name",
+      flex: 1,
+      cellClassName: "name-column--cell",
     },
 
     {
       field: "email",
       headerName: "Email",
+      flex: 1,
     },
-    // {
-    //   field: "accessLevel",
-    //   headerName: "Access Level",
-    //   flex: 2,
-    //   renderCell: ({ row: { access } }) => {
-    //     return (
-    //       <Box p="5px" display="flex">
-    //         {access}
-    //       </Box>
-    //     );
-    //   },
-    // },
+    {
+      field: "location",
+      headerName: "Address",
+      flex: 1,
+    },
   ];
 
   return (
     <Box m="20px">
-      <Header title="POSTS" subtitle="Managing the Posts " />
+      <Header title=" Our Users" />
       <Box
         m="40px 0 0 0"
         height="75vh"
@@ -62,12 +75,19 @@ const Team = () => {
           "& .MuiCheckbox-root": {
             color: `${colors.greenAccent[200]} !important`,
           },
+          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+            color: `${colors.grey[100]} !important`,
+          },
         }}
       >
-        <DataGrid checkboxSelection rows={mockDataTeam} columns={columns} />
+        <DataGrid
+          rows={users}
+          columns={columns}
+          components={{ Toolbar: GridToolbar }}
+        />
       </Box>
     </Box>
   );
 };
 
-export default Team;
+export default Users;
