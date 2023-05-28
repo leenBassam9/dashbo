@@ -8,15 +8,19 @@ import { useEffect } from "react";
 const Posts = () => {
   const [posts, setPosts] = useState([]);
   const fetchDate = async () => {
-    await fetch("https://jsonplaceholder.typicode.com/posts", {
+    await fetch("http://127.0.0.1:8000/api/posts", {
       method: "GET",
-    })
-      .then((response) => response.json())
-      .then((data) => setPosts(data));
+    }).then((response) =>
+      response.json().then((x) => {
+        setPosts(x.data);
+      })
+    );
   };
   useEffect(() => {
     fetchDate();
   }, []);
+
+  
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const columns = [

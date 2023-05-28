@@ -1,25 +1,53 @@
 import { Box } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-import { DataUsers } from "../../data/mockData";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 
 const Users = () => {
-  const [users, setUsers] = useState([]);
-  const fetchDate = async () => {
-    // http://localhost:8000/api/ShowUserProfile
-    await fetch("https://jsonplaceholder.typicode.com/posts", {
-      method: "GET",
-    })
-      .then((response) => response.json())
+  // const [users, setUser] = useState([]);
+  // const fetchDate = async () => {
+  //   await fetch("http://127.0.0.1:8000/api/ShowUserProfile", {
+  //     method: "GET",
+  //   }).then((response) =>
+  //     response.json().then((res) => {
+  //       setUser(res.data);
+  //     })
+  //   );
+  // };
+  // useEffect(() => {
+  //   fetchDate();
+  // }, []);
 
-      .then((data) => console.log(data));
-  };
+  const { id } = useParams();
+
+  const [users, getUsers] = useState([]);
+
   useEffect(() => {
-    fetchDate();
+    getallstudents();
   }, []);
+
+  const getallstudents = () => {
+    axios.get("http://127.0.0.1:8000/api/ShowUserProfile").then((response) => {
+      getUsers(response.data);
+      console.log(response.data);
+    });
+    axios.get("http://127.0.0.1:8000/api/ShowUserProfile").catch((error) => {
+      console.log(error);
+    });
+  };
+  //  try{
+  // const deleteUser = async (id) => {
+  //   try {
+  //     await axios.delete(`http://localhost:8000/api/ShowUserProfile/${id}`);
+  //     getallstudents();
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -81,7 +109,7 @@ const Users = () => {
         }}
       >
         <DataGrid
-          rows={users}
+          rows={users.data}
           columns={columns}
           components={{ Toolbar: GridToolbar }}
         />

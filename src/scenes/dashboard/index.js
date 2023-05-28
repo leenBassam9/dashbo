@@ -1,4 +1,11 @@
-import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Typography,
+  useTheme,
+  TextField,
+} from "@mui/material";
 import { tokens } from "../../theme";
 import { Transactions } from "../../data/mockData";
 import EmailIcon from "@mui/icons-material/Email";
@@ -11,8 +18,37 @@ import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
 import { useState } from "react";
+import { useEffect } from "react";
 
 const Dashboard = () => {
+  const [t, setT] = useState([]);
+  const fetchDate1 = async () => {
+    await fetch("http://127.0.0.1:8000/api/RecentTransactions", {
+      method: "GET",
+    }).then((response) =>
+      response.json().then((x) => {
+        setT(x.data);
+      })
+    );
+  };
+  useEffect(() => {
+    fetchDate1();
+  }, []);
+
+  const [count, setCount] = useState([]);
+  const fetchDate2 = async () => {
+    await fetch("http://127.0.0.1:8000/api/countPosts", {
+      method: "GET",
+    }).then((response) =>
+      response.json().then((y) => {
+        setCount(y.data);
+      })
+    );
+  };
+  useEffect(() => {
+    fetchDate2();
+  }, []);
+
   // const [visitor, setVisitor] = useState(null);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -58,17 +94,30 @@ const Dashboard = () => {
           display="flex"
           alignItems="center"
           justifyContent="center"
+          sx={{
+            fontSize: "20px",
+            "&:hover": {
+              backgroundColor: "primary.dark",
+              opacity: [0.9, 0.8, 0.7],
+            },
+          }}
         >
           <StatBox
-            title="32,441"
             subtitle="Today Trasations"
-            progress="0.30"
+            progress="0.90"
             icon={
               <CalendarTodayIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+                sx={{
+                  color: colors.greenAccent[600],
+                  fontSize: "26px",
+                }}
               />
             }
           />
+
+          <Typography mr={"20px"} fontSize={"20px"}>
+            {count}
+          </Typography>
         </Box>
 
         <Box
@@ -144,9 +193,9 @@ const Dashboard = () => {
               Recent Transactions
             </Typography>
           </Box>
-          {Transactions.map((transaction, i) => (
+          {t.map((transaction, i) => (
             <Box
-              key={`${transaction.txId}-${i}`}
+              key={`${transaction.id}-${i}`}
               display="flex"
               justifyContent="space-between"
               alignItems="center"
@@ -155,10 +204,10 @@ const Dashboard = () => {
             >
               <Box>
                 <Typography color={colors.grey[100]}>
-                  {transaction.user}
+                  {transaction.user.name}
                 </Typography>
               </Box>
-              <Box color={colors.grey[100]}>{transaction.item}</Box>
+              <Box color={colors.grey[100]}>{transaction.title}</Box>
             </Box>
           ))}
         </Box>

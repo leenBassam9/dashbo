@@ -3,7 +3,6 @@ import { Routes, Route } from "react-router-dom";
 import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
-import Team from "./scenes/team";
 import Posts from "./scenes/posts/index";
 import Users from "./scenes/users";
 import Form from "./scenes/form";
@@ -16,7 +15,6 @@ import Pie from "./scenes/pie";
 import Geography from "./scenes/geography";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
-import Category from "./scenes/catergory";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -34,8 +32,7 @@ function App() {
               {/* <Route path="/" element={<Login />} /> */}
               <Route path="/" element={<Dashboard />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/team" element={<Team />} />
-              <Route path="/category" element={<Category />} />
+              {/* <Route path="/team" element={<Team />} /> */}
               <Route path="/users" element={<Users />} />
               <Route path="/posts" element={<Posts />} />
               <Route path="/form" element={<Form />} />
