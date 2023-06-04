@@ -15,10 +15,13 @@ import Pie from "./scenes/pie";
 import Geography from "./scenes/geography";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
+import { Navigate } from "react-router-dom";
+
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
-
+  const isAuthenticated = localStorage.getItem("jwtToken") !== null;
+  const userRole = localStorage.getItem("userRole");
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -28,20 +31,17 @@ function App() {
           <Sidebar isSidebar={isSidebar} />
           <main className="content">
             <Topbar setIsSidebar={setIsSidebar} />
-            <Routes>
-              {/* <Route path="/" element={<Login />} /> */}
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/profile" element={<Profile />} />
-              {/* <Route path="/team" element={<Team />} /> */}
-              <Route path="/users" element={<Users />} />
-              <Route path="/posts" element={<Posts />} />
-              <Route path="/form" element={<Form />} />
-              <Route path="/bar" element={<Bar />} />
-              <Route path="/pie" element={<Pie />} />
-              <Route path="/line" element={<Line />} />
-              <Route path="/geography" element={<Geography />} />
-              {/* <Route path="*" element={<h1>Page Not Found </h1>} /> */}
-            </Routes>
+
+            {isAuthenticated ? (
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/users" element={<Users />} />
+              </Routes>
+            ) : (
+              <>
+                <Navigate to="/login" />
+              </>
+            )}
           </main>
         </div>
       </ThemeProvider>

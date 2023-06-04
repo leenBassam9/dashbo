@@ -11,7 +11,6 @@ import {
   Avatar,
   Container,
 } from "@mui/material";
-import axios from "axios";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
@@ -20,21 +19,43 @@ import "../login/login.css";
 const LoginComponent = () => {
   const [values, setValues] = useState({
     email: "",
-    passwrd: "",
+    password: "",
+    token: "",
     showPassword: false,
   });
+  const token = localStorage.getItem("token");
 
-  const handelSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:8000/users", {
+
+    fetch("http://127.0.0.1:8000/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         email: values.email,
-        passwrd: values.passwrd,
+        password: values.password,
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
       })
-      .then((res) => console.log(res));
+      .then((data) => {
+        // Store the JWT token in the user's browser
+        localStorage.setItem("jwtToken", data.token);
+
+        // Redirect the user to the home page or dashboard
+        window.location.href = "/";
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
-  
-  // console.log(values);
+
   const handlePassVisibility = () => {
     setValues({
       ...values,
@@ -51,7 +72,7 @@ const LoginComponent = () => {
           <h1>Log In</h1>
         </Grid>
 
-        <form onSubmit={handelSubmit}>
+        <form onSubmit={handleSubmit}>
           <TextField
             onChange={(e) => setValues({ ...values, email: e.target.value })}
             className="TextFiledStyle"
@@ -69,7 +90,7 @@ const LoginComponent = () => {
           />
 
           <TextField
-            onChange={(e) => setValues({ ...values, passwrd: e.target.value })}
+            onChange={(e) => setValues({ ...values, password: e.target.value })}
             className="TextFiledStyle"
             InputProps={{
               startAdornment: (

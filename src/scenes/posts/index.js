@@ -20,9 +20,23 @@ const Posts = () => {
     fetchDate();
   }, []);
 
-  
+  const [users, setUsers] = useState([]);
+  const fetchDate2 = async () => {
+    await fetch("http://127.0.0.1:8000/api/ShowUserProfile", {
+      method: "GET",
+    }).then((response) =>
+      response.json().then((y) => {
+        setUsers(y.data);
+      })
+    );
+  };
+  useEffect(() => {
+    fetchDate2();
+  }, []);
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
   const columns = [
     { field: "id", headerName: "ID" },
     {
@@ -31,7 +45,7 @@ const Posts = () => {
     },
 
     {
-      field: "location",
+      field: "name",
       headerName: "Product User",
     },
   ];
@@ -68,7 +82,7 @@ const Posts = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection rows={posts} columns={columns} />
+        <DataGrid checkboxSelection rows={users } columns={columns} />
       </Box>
     </Box>
   );

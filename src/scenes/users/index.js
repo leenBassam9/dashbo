@@ -8,37 +8,36 @@ import { useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 
 const Users = () => {
-  // const [users, setUser] = useState([]);
-  // const fetchDate = async () => {
-  //   await fetch("http://127.0.0.1:8000/api/ShowUserProfile", {
-  //     method: "GET",
-  //   }).then((response) =>
-  //     response.json().then((res) => {
-  //       setUser(res.data);
-  //     })
-  //   );
-  // };
-  // useEffect(() => {
-  //   fetchDate();
-  // }, []);
-
-  const { id } = useParams();
-
-  const [users, getUsers] = useState([]);
-
+  const [users, setUser] = useState([]);
+  const fetchDate = async () => {
+    await fetch("http://127.0.0.1:8000/api/ShowUserProfile", {
+      method: "GET",
+    }).then((response) =>
+      response.json().then((res) => {
+        setUser(res.data);
+      })
+    );
+  };
   useEffect(() => {
-    getallstudents();
+    fetchDate();
   }, []);
 
-  const getallstudents = () => {
-    axios.get("http://127.0.0.1:8000/api/ShowUserProfile").then((response) => {
-      getUsers(response.data);
-      console.log(response.data);
-    });
-    axios.get("http://127.0.0.1:8000/api/ShowUserProfile").catch((error) => {
-      console.log(error);
-    });
-  };
+  // const { id } = useParams();
+
+  // const [users, getUsers] = useState([]);
+
+  // useEffect(() => {
+  //   getallstudents();
+  // }, []);
+
+  // const getallstudents = () => {
+  //   axios.get("http://127.0.0.1:8000/api/ShowUserProfile").then((response) => {
+  //     getUsers(response.data);
+  //   });
+  //   axios.get("http://127.0.0.1:8000/api/ShowUserProfile").catch((error) => {
+  //     console.log(error);
+  //   });
+  // };
   //  try{
   // const deleteUser = async (id) => {
   //   try {
@@ -109,7 +108,7 @@ const Users = () => {
         }}
       >
         <DataGrid
-          rows={users.data}
+          rows={users}
           columns={columns}
           components={{ Toolbar: GridToolbar }}
         />
