@@ -46,7 +46,7 @@ const LoginComponent = () => {
       })
       .then((data) => {
         // Store the JWT token in the user's browser
-        localStorage.setItem("jwtToken", data.token);
+        localStorage.setItem("jwtToken", data.authorisation.token);
 
         // Redirect the user to the home page or dashboard
         window.location.href = "/";
