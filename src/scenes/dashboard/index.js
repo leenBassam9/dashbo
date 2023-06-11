@@ -1,20 +1,13 @@
-import {
-  Box,
-  Button,
-  IconButton,
-  Typography,
-  useTheme,
-  TextField,
-} from "@mui/material";
+import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
+import axios from "axios";
 import { tokens } from "../../theme";
-import { Transactions } from "../../data/mockData";
-import EmailIcon from "@mui/icons-material/Email";
+import MessageIcon from "@mui/icons-material/Message";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
 import Header from "../../components/Header";
 import LineChart from "../../components/LineChart";
 import GeographyChart from "../../components/GeographyChart";
-import BarChart from "../../components/BarChart";
+import Bar_Chart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
 import { useState } from "react";
@@ -36,7 +29,7 @@ const Dashboard = () => {
   }, []);
 
   const [count, setCount] = useState([]);
-  const fetchDate2 = async () => {
+  const getTansactions = async () => {
     await fetch("http://127.0.0.1:8000/api/countPosts", {
       method: "GET",
     }).then((response) =>
@@ -46,10 +39,38 @@ const Dashboard = () => {
     );
   };
   useEffect(() => {
-    fetchDate2();
+    getTansactions();
   }, []);
 
-  // const [visitor, setVisitor] = useState(null);
+  const [visitors, getVisitors] = useState([]);
+  const fetchDate3 = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/visitors");
+      getVisitors(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDate3();
+  }, []);
+
+  const [messages, setMessages] = useState([]);
+
+  const fetchMessages = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:8000/api/CountMsg");
+      setMessages(response.data.data); // Extract the "data" property from the response
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMessages();
+  }, []);
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -74,18 +95,30 @@ const Dashboard = () => {
           display="flex"
           alignItems="center"
           justifyContent="center"
+          sx={{
+            fontSize: "20px",
+            "&:hover": {
+              backgroundColor: "primary.dark",
+              opacity: [0.9, 0.8, 0.7],
+            },
+          }}
         >
           <StatBox
-            title="12,361"
             subtitle="Messages Sent"
-            progress="0.75"
-            // increase="+14%"
+            progress="0.90"
             icon={
-              <EmailIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+              <MessageIcon
+                sx={{
+                  color: colors.greenAccent[600],
+                  fontSize: "26px",
+                }}
               />
             }
           />
+
+          <Typography mr={"20px"} fontSize={"20px"}>
+            {messages}
+          </Typography>
         </Box>
 
         <Box
@@ -104,7 +137,6 @@ const Dashboard = () => {
         >
           <StatBox
             subtitle="Today Trasations"
-            progress="0.90"
             icon={
               <CalendarTodayIcon
                 sx={{
@@ -126,18 +158,29 @@ const Dashboard = () => {
           display="flex"
           alignItems="center"
           justifyContent="center"
+          sx={{
+            fontSize: "20px",
+            "&:hover": {
+              backgroundColor: "primary.dark",
+              opacity: [0.9, 0.8, 0.7],
+            },
+          }}
         >
           <StatBox
-            title="32,441"
-            subtitle="New Users"
-            progress="0.30"
-            // increase="+5%"
+            subtitle="New Visitors"
             icon={
-              <PersonAddIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+              <SentimentSatisfiedAltIcon
+                sx={{
+                  color: colors.greenAccent[600],
+                  fontSize: "30px",
+                }}
               />
             }
           />
+
+          <Typography mr={"20px"} fontSize={"20px"}>
+            {visitors}
+          </Typography>
         </Box>
 
         {/* ROW 2 */}
@@ -161,13 +204,9 @@ const Dashboard = () => {
               >
                 Revenue Generated
               </Typography>
-              <Typography
-                variant="h3"
-                fontWeight="bold"
-                color={colors.greenAccent[500]}
-              >
-                $59,342.32
-              </Typography>
+              <div>
+                <Bar_Chart />
+              </div>
             </Box>
           </Box>
           <Box height="250px" m="-20px 0 0 0">

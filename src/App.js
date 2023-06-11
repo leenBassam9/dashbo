@@ -8,6 +8,7 @@ import Users from "./scenes/users";
 import Form from "./scenes/form";
 import Profile from "./scenes/profile";
 import Login from "./scenes/login/login";
+import Admins from "./scenes/Admins";
 // CHARTS
 import Bar from "./scenes/bar";
 import Line from "./scenes/line";
@@ -36,6 +37,7 @@ function App() {
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/users" element={<Users />} />
+                  <Route path="/admins" element={<Admins />} />
 
                   <Route path="/posts" element={<Posts />} />
                   <Route path="/form" element={<Form />} />

@@ -1,98 +1,82 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../../components/Header";
+import { IconButton } from "@material-ui/core";
 
+import DeleteIcon from "@mui/icons-material/Delete";
 const Posts = () => {
-  const [posts, setPosts] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [reports, setReports] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const [users, getUser] = useState([]);
+
+  const getAllUsers = async () => {
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:8000/api/report_count"
+      );
+      getUser(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const usersResponse = await axios.get(
-          "http://127.0.0.1:8000/api/ShowUserProfile"
-        );
-        console.log(usersResponse.data); // Log API response
-        setUsers(usersResponse.data);
-
-        const postsResponse = await axios.get(
-          "http://127.0.0.1:8000/api/posts"
-        );
-        console.log(postsResponse.data); // Log API response
-        setPosts(postsResponse.data);
-
-        const reportsResponse = await axios.get(
-          "http://127.0.0.1:8000/api/report_count/1"
-        );
-        console.log(reportsResponse.data); // Log API response
-        setReports(reportsResponse.data);
-
-        setLoading(false);
-      } catch (error) {
-        console.error(error);
-        setError(error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    getAllUsers();
   }, []);
-
-  console.log("users:", users);
-  console.log("posts:", posts);
-  console.log("reports:", reports);
-
-  if (loading) {
-    console.log("Loading...");
-    return <Typography>Loading...</Typography>;
-  }
-
-  if (error) {
-    console.log("Error:", error.message); //
-    return <Typography>Error: {error.message}</Typography>;
-  }
-
-  const usersData = Array.isArray(users)
-    ? users.map((user) => ({ name: user.name }))
-    : [];
-
-  const postsData = Array.isArray(posts)
-    ? posts.map((post) => ({ title: post.title }))
-    : [];
-
-  const reportsData = Array.isArray(reports)
-    ? reports.map((report) => ({ post_id: report.post_id }))
-    : [];
-
-  const mergedData = usersData.concat(postsData, reportsData);
-  console.log("data:", mergedData); // Log combined array data
 
   const columns = [
     {
-      field: "name",
+      field: "id",
+      headerName: " ID",
+      width: 50,
+    },
+    {
+      field: "user_name",
       headerName: "Name",
-      width: 150,
+      width: 200,
     },
     {
       field: "title",
       headerName: "Title",
-      width: 250,
-    },
-    {
-      field: "post_id",
-      headerName: "Reported Post ID",
       width: 200,
     },
+
+    {
+      field: "report_count",
+      headerName: "report count",
+      width: 100,
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 0.5,
+      renderCell: (params) => (
+        <IconButton
+          color="secondary"
+          size="small"
+          onClick={(e) => {
+            e.stopPropagation();
+            deletePost(params.row.id);
+          }}
+        >
+          <DeleteIcon />
+        </IconButton>
+      ),
+    },
   ];
+  const deletePost = async (id) => {
+    console.log(id);
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/posts/${id}`);
+      getUser((prevUsers) => prevUsers.filter((post) => post.id !== id));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Box m="20px">
@@ -126,7 +110,7 @@ const Posts = () => {
           },
         }}
       >
-        <DataGrid checkboxSelection rows={usersData} columns={columns} />
+        <DataGrid rows={users} columns={columns} />
       </Box>
     </Box>
   );

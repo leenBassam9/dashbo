@@ -1,51 +1,40 @@
 import { Box } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
-
+import axios from "axios";
 import Header from "../../components/Header";
 import { useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
+import { IconButton } from "@material-ui/core";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const Users = () => {
-  const [users, setUser] = useState([]);
-  const fetchDate = async () => {
-    await fetch("http://127.0.0.1:8000/api/ShowUserProfile", {
-      method: "GET",
-    }).then((response) =>
-      response.json().then((res) => {
-        setUser(res.data);
-      })
-    );
+  const [users, getUser] = useState([]);
+
+  const getAllUsers = async () => {
+    try {
+      const response = await axios.get(
+        "http://127.0.0.1:8000/api/ShowUserProfile"
+      );
+      getUser(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   useEffect(() => {
-    fetchDate();
+    getAllUsers();
   }, []);
 
-  // const { id } = useParams();
-
-  // const [users, getUsers] = useState([]);
-
-  // useEffect(() => {
-  //   getallstudents();
-  // }, []);
-
-  // const getallstudents = () => {
-  //   axios.get("http://127.0.0.1:8000/api/ShowUserProfile").then((response) => {
-  //     getUsers(response.data);
-  //   });
-  //   axios.get("http://127.0.0.1:8000/api/ShowUserProfile").catch((error) => {
-  //     console.log(error);
-  //   });
-  // };
-  //  try{
-  // const deleteUser = async (id) => {
-  //   try {
-  //     await axios.delete(`http://localhost:8000/api/ShowUserProfile/${id}`);
-  //     getallstudents();
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const deleteUser = async (id) => {
+    console.log(id);
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/destroy/${id}`);
+      getUser((prevUsers) => prevUsers.filter((user) => user.id !== id));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -58,7 +47,6 @@ const Users = () => {
       flex: 1,
       cellClassName: "name-column--cell",
     },
-
     {
       field: "email",
       headerName: "Email",
@@ -69,11 +57,25 @@ const Users = () => {
       headerName: "Address",
       flex: 1,
     },
+    {
+      field: "actions",
+      headerName: "Actions",
+      flex: 0.5,
+      renderCell: (params) => (
+        <IconButton
+          color="secondary"
+          size="small"
+          onClick={() => deleteUser(params.row.id)}
+        >
+          <DeleteIcon />
+        </IconButton>
+      ),
+    },
   ];
 
   return (
     <Box m="20px">
-      <Header title=" Our Users" />
+      <Header title="Users" />
       <Box
         m="40px 0 0 0"
         height="75vh"

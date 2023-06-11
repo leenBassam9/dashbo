@@ -46,7 +46,7 @@ const LoginComponent = () => {
       })
       .then((data) => {
         // Store the JWT token in the user's browser
-        localStorage.setItem("jwtToken", data.authorisation.token);
+        localStorage.setItem("jwtToken", data.token);
 
         // Redirect the user to the home page or dashboard
         window.location.href = "/";
@@ -63,7 +63,13 @@ const LoginComponent = () => {
     });
   };
   return (
-    <Container maxWidth="sm" className="GridStyle">
+    <Container
+      maxWidth="sm"
+      className="GridStyle"
+      sx={{
+        height: "100%",
+      }}
+    >
       <Paper className="PaperStyle" elevation={4}>
         <Grid align="center">
           <Avatar className="AvatarStyle">
@@ -122,14 +128,9 @@ const LoginComponent = () => {
           />
 
           <Button fullWidth variant="outlined" type="submit">
-            Sign in
+            Log-in
           </Button>
         </form>
-        <Typography align="center">
-          <Link href="@" variant="body2">
-            Forget Paswword?
-          </Link>
-        </Typography>
       </Paper>
     </Container>
   );

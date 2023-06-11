@@ -3,15 +3,31 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
+import axios from "axios";
+import { useState } from "react";
 
 const Form = () => {
-  const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [responseMessage, setResponseMessage] = useState("");
+
   const handleFormSubmit = (values) => {
     console.log(values);
+    axios
+      .post("http://127.0.0.1:8000/api/register", values)
+      .then((response) => {
+        console.log(response.data);
+        setResponseMessage(response.data.message);
+      })
+      .catch((error) => {
+        console.error(error);
+        setResponseMessage("An error occurred while adding the admin.");
+      });
   };
+
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+
   return (
     <Box m="20px">
-      <Header title="New Admin" subtitle="Add  New Admin" />
+      <Header title="New Admin" subtitle="Add New Admin" />
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
@@ -26,6 +42,7 @@ const Form = () => {
           handleSubmit,
         }) => (
           <form onSubmit={handleSubmit}>
+            {responseMessage && <div>{responseMessage}</div>}
             <Box
               display="grid"
               gap="30px"
@@ -54,30 +71,32 @@ const Form = () => {
                 label="Email"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.contact}
+                value={values.email} // update this line
                 name="email"
                 error={!!touched.email && !!errors.email}
                 helperText={touched.email && errors.email}
                 sx={{ gridColumn: "span 3" }}
               />
-              {/* <TextField
+
+              <TextField
                 fullWidth
                 variant="filled"
                 type="text"
-                label="Access Level"
+                label="password"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.address1}
-                name="accesslevel"
-                error={!!touched.accesslevel && !!errors.accesslevel}
-                helperText={touched.accesslevel && errors.accesslevel}
+                value={values.password}
+                name="password"
+                error={!!touched.password && !!errors.password}
+                helperText={touched.password && errors.password}
                 sx={{ gridColumn: "span 3" }}
-              /> */}
+              />
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
                 Add New Admin
               </Button>
+              {/* {isSubmitting ? "" : "Add New Admin"} */}
             </Box>
           </form>
         )}
@@ -90,23 +109,18 @@ const phoneRegExp =
   /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
 
 const checkoutSchema = yup.object().shape({
-  firstName: yup.string().required("required"),
-  lastName: yup.string().required("required"),
-  email: yup.string().email("invalid email").required("required"),
-  contact: yup
+  name: yup.string().required("Name is required"),
+  email: yup
     .string()
-    .matches(phoneRegExp, "Phone number is not valid")
-    .required("required"),
-  address1: yup.string().required("required"),
-  address2: yup.string().required("required"),
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: yup.string().required("Password is required"),
 });
+
 const initialValues = {
-  firstName: "",
-  lastName: "",
+  name: "",
   email: "",
-  contact: "",
-  address1: "",
-  address2: "",
+  password: "",
 };
 
 export default Form;
