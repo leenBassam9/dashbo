@@ -10,7 +10,7 @@ import Profile from "./scenes/profile";
 import Login from "./scenes/login/login";
 import Admins from "./scenes/Admins";
 // CHARTS
-import Bar from "./scenes/bar";
+import BarChartExample from "./scenes/bar";
 import Line from "./scenes/line";
 import Pie from "./scenes/pie";
 import Geography from "./scenes/geography";
@@ -41,7 +41,7 @@ function App() {
 
                   <Route path="/posts" element={<Posts />} />
                   <Route path="/form" element={<Form />} />
-                  <Route path="/bar" element={<Bar />} />
+                  <Route path="/bar" element={<BarChartExample />} />
                   <Route path="/pie" element={<Pie />} />
                   <Route path="/line" element={<Line />} />
                   <Route path="/geography" element={<Geography />} />

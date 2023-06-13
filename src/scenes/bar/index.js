@@ -1,43 +1,55 @@
-import { useState, useEffect } from "react";
-import { Box } from "@mui/material";
-import Header from "../../components/Header";
 import {
   BarChart,
+  Bar,
   XAxis,
   YAxis,
+  CartesianGrid,
   Tooltip,
   Legend,
-  CartesianGrid,
-  Bar,
 } from "recharts";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 const BarChartExample = () => {
-  const [data, getData] = useState([]);
+  const [data, setData] = useState([]);
+
   useEffect(() => {
     axios
-      .get(" http://127.0.0.1:8000/api/countPostsByMonth")
+      .get("http://127.0.0.1:8000/api/countPostsByMonth")
       .then((response) => {
-        getData(response.data);
+        let modifiedData = [];
+        if (Array.isArray(response.data)) {
+          modifiedData = response.data.map((item) => {
+            return {
+              month: item.month,
+              count: item.count,
+            };
+          });
+        } else if (typeof response.data === "object") {
+          modifiedData = Object.keys(response.data).map((key) => {
+            return {
+              month: key,
+              count: response.data[key],
+            };
+          });
+        }
+        setData(modifiedData);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => console.log(error));
   }, []);
+
   return (
-    <Box m="20px">
-      <Header title="Bar Chart" subtitle="Simple Bar Chart" />
-      <Box height="75vh">
-        <BarChart width={400} height={300} data={data}>
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <CartesianGrid strokeDasharray="3 3" />
-          <Bar dataKey="value" fill="#8884d8" />
-        </BarChart>
-      </Box>
-    </Box>
+    <div>
+      <h1>Bar Chart</h1>
+      <BarChart width={400} height={300} data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="month" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="count" fill="#8884d8" />
+      </BarChart>
+    </div>
   );
 };
 

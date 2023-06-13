@@ -15,8 +15,8 @@ import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
 import "../../index.css";
-
-const Item = ({ title, to, icon, selected, setSelected }) => {
+import React from "react";
+const Item = ({ title, to, icon, selected, setSelected, onClose }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   return (
@@ -25,8 +25,13 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       style={{
         color: colors.grey[100],
       }}
-      onClick={() => setSelected(title)}
-      icon={icon}
+      onClick={() => {
+        setSelected(title);
+        onClose();
+      }}
+      icon={React.cloneElement(icon, {
+        color: selected === title ? "primary" : undefined,
+      })}
     >
       <Typography>{title}</Typography>
       <Link to={to} />
@@ -39,6 +44,10 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [selected, setSelected] = useState("Dashboard");
+
+  const handleClose = () => {
+    setIsCollapsed(true);
+  };
 
   return (
     <Box
@@ -111,27 +120,30 @@ const Sidebar = () => {
                   >
                     Leen Bassam
                   </Typography>
-                  <Typography variant="h5" color={colors.greenAccent[600]}>
+
+                  {/* <Typography variant="h5" color={colors.greenAccent[600]}>
                     Admin Manager
-                  </Typography>
+                  </Typography> */}
                 </Box>
               </Box>
             )}
 
             <Box paddingLeft={isCollapsed ? undefined : "10%"}>
-              {/* <Item
+              <Item
                 title="Profile"
                 to="/profile"
                 icon={<PersonOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
-              /> */}
+                onClose={handleClose}
+              />
               <Item
                 title="Dashboard"
                 to="/"
                 icon={<HomeOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
+                onClose={handleClose}
               />
 
               <Typography
@@ -143,10 +155,11 @@ const Sidebar = () => {
               </Typography>
               <Item
                 title="Manage Team"
-                to="/admins"
+                to="/team"
                 icon={<PeopleOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
+                onClose={handleClose}
               />
               <Item
                 title="Manage Users "
@@ -154,6 +167,7 @@ const Sidebar = () => {
                 icon={<ContactsOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
+                onClose={handleClose}
               />
               <Item
                 title="Manage Posts"
@@ -161,6 +175,7 @@ const Sidebar = () => {
                 icon={<ReceiptOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
+                onClose={handleClose}
               />
 
               <Typography
@@ -176,6 +191,7 @@ const Sidebar = () => {
                 icon={<PersonOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
+                onClose={handleClose}
               />
 
               <Typography
@@ -191,6 +207,7 @@ const Sidebar = () => {
                 icon={<BarChartOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
+                onClose={handleClose}
               />
               <Item
                 title="Pie Chart"
@@ -198,6 +215,7 @@ const Sidebar = () => {
                 icon={<PieChartOutlineOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
+                onClose={handleClose}
               />
               <Item
                 title="Line Chart"
@@ -205,6 +223,7 @@ const Sidebar = () => {
                 icon={<TimelineOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
+                onClose={handleClose}
               />
               <Item
                 title="Geography Chart"
@@ -212,6 +231,7 @@ const Sidebar = () => {
                 icon={<MapOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
+                onClose={handleClose}
               />
             </Box>
           </Menu>

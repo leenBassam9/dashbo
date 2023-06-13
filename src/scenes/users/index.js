@@ -75,7 +75,7 @@ const Users = () => {
 
   return (
     <Box m="20px">
-      <Header title="Users" />
+      <Header title="  Users" />
       <Box
         m="40px 0 0 0"
         height="75vh"

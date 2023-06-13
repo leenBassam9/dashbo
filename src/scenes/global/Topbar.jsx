@@ -1,17 +1,23 @@
-import { Box, IconButton, useTheme, Icon } from "@mui/material";
+import { Box, IconButton, useTheme } from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
-import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import ExitToApp from "@mui/icons-material/ExitToApp";
 
 const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  const history = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("jwtToken");
+    history.push("/login");
+  };
 
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
@@ -37,16 +43,11 @@ const Topbar = () => {
           )}
         </IconButton>
 
-        {/* <NavLink> */}
-        {/* <IconButton>
-          <PersonOutlinedIcon />
-        </IconButton> */}
-        {/* </NavLink> */}
-        <NavLink to="/profile">
-          <IconButton>
-            <PersonOutlinedIcon />{" "}
+        <Box display="grid" flexDirection="column">
+          <IconButton onClick={handleLogout}>
+            <ExitToApp />
           </IconButton>
-        </NavLink>
+        </Box>
       </Box>
     </Box>
   );

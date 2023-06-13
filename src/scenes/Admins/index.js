@@ -182,8 +182,8 @@ const Admins = () => {
             color: "#000000 !important",
             margin: "8px !important",
             borderRadius: "30px !important",
-            fontSize: "12px", // increase font size
-            padding: "2px 5px !important", // increase padding
+            fontSize: "12px",  
+            padding: "2px 5px !important", 
           }}
         >
           Add Admin

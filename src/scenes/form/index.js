@@ -10,7 +10,10 @@ const Form = () => {
   const [responseMessage, setResponseMessage] = useState("");
 
   const handleFormSubmit = (values) => {
-    console.log(values);
+    // console.log(values);
+    values.is_admin = 1;
+    console.log(values.is_admin);
+
     axios
       .post("http://127.0.0.1:8000/api/register", values)
       .then((response) => {
@@ -105,9 +108,6 @@ const Form = () => {
   );
 };
 
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-
 const checkoutSchema = yup.object().shape({
   name: yup.string().required("Name is required"),
   email: yup
@@ -115,12 +115,14 @@ const checkoutSchema = yup.object().shape({
     .email("Invalid email address")
     .required("Email is required"),
   password: yup.string().required("Password is required"),
+  is_admin: yup.number().integer().default(1), 
 });
 
 const initialValues = {
   name: "",
   email: "",
   password: "",
+  is_admin: 1,
 };
 
 export default Form;

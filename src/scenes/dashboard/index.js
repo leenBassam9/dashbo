@@ -1,81 +1,74 @@
-import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { tokens } from "../../theme";
+import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
+
 import MessageIcon from "@mui/icons-material/Message";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
+
 import Header from "../../components/Header";
 import LineChart from "../../components/LineChart";
 import GeographyChart from "../../components/GeographyChart";
-import Bar_Chart from "../../components/BarChart";
+import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
-import { useState } from "react";
-import { useEffect } from "react";
+import { tokens } from "../../theme";
 
 const Dashboard = () => {
   const [t, setT] = useState([]);
-  const fetchDate1 = async () => {
-    await fetch("http://127.0.0.1:8000/api/RecentTransactions", {
-      method: "GET",
-    }).then((response) =>
-      response.json().then((x) => {
-        setT(x.data);
-      })
-    );
-  };
-  useEffect(() => {
-    fetchDate1();
-  }, []);
-
-  const [count, setCount] = useState([]);
-  const getTansactions = async () => {
-    await fetch("http://127.0.0.1:8000/api/countPosts", {
-      method: "GET",
-    }).then((response) =>
-      response.json().then((y) => {
-        setCount(y.data);
-      })
-    );
-  };
-  useEffect(() => {
-    getTansactions();
-  }, []);
-
-  const [visitors, getVisitors] = useState([]);
-  const fetchDate3 = async () => {
-    try {
-      const response = await axios.get("http://127.0.0.1:8000/api/visitors");
-      getVisitors(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const [count, setCount] = useState("");
+  const [visitors, setVisitors] = useState("");
+  const [messages, setMessages] = useState("");
 
   useEffect(() => {
-    fetchDate3();
-  }, []);
+    const fetchRecentTransactions = async () => {
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/RecentTransactions",
+        {
+          method: "GET",
+        }
+      );
+      const data = await response.json();
+      setT(data.data);
+    };
 
-  const [messages, setMessages] = useState([]);
+    const fetchPostCount = async () => {
+      const response = await fetch("http://127.0.0.1:8000/api/countPosts", {
+        method: "GET",
+      });
+      const data = await response.json();
+      setCount(data.data);
+    };
 
-  const fetchMessages = async () => {
-    try {
-      const response = await axios.get("http://127.0.0.1:8000/api/CountMsg");
-      setMessages(response.data.data); // Extract the "data" property from the response
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    const fetchVisitors = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/visitors");
+        setVisitors(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  useEffect(() => {
-    fetchMessages();
+    const fetchMessageCount = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/api/CountMsg");
+        setMessages(response.data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchRecentTransactions();
+    fetchPostCount();
+    fetchVisitors();
+    fetchMessageCount();
   }, []);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   return (
-    <Box m="20px">
+    <Box m="15px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="Dakesh Dashboard" subtitle="Welcome to your dashboard" />
@@ -136,7 +129,7 @@ const Dashboard = () => {
           }}
         >
           <StatBox
-            subtitle="Today Trasations"
+            subtitle="Today Transactions"
             icon={
               <CalendarTodayIcon
                 sx={{
@@ -204,9 +197,7 @@ const Dashboard = () => {
               >
                 Revenue Generated
               </Typography>
-              <div>
-                <Bar_Chart />
-              </div>
+              <div>{/* <BarChartExa /> */}</div>
             </Box>
           </Box>
           <Box height="250px" m="-20px 0 0 0">
@@ -218,9 +209,11 @@ const Dashboard = () => {
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
           overflow="auto"
+          flexDirection="column"
+          display="flex"
         >
           <Box
-            // height={"100px"}
+            height={"100px"}
             display="flex"
             justifyContent="space-between"
             alignItems="center"
@@ -240,8 +233,17 @@ const Dashboard = () => {
               alignItems="center"
               borderBottom={`4px solid ${colors.primary[500]}`}
               p="15px"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "primary.dark",
+                  opacity: [0.9, 0.8, 0.7],
+                },
+              }}
+              height={"fit-content"}
+              // width={"fit-content"}
+              //
             >
-              <Box>
+              <Box maxHeight={"80%"}>
                 <Typography color={colors.grey[100]}>
                   {transaction.user.name}
                 </Typography>
