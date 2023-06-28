@@ -1,0 +1,11 @@
+.login-paper {
+  padding: 2rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+@media (min-width: 400px) {
+  .login-paper {
+    width: 40%;
+  }
+}

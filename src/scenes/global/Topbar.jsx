@@ -6,18 +6,11 @@ import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
-import ExitToApp from "@mui/icons-material/ExitToApp";
 
 const Topbar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
-  const history = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem("jwtToken");
-    history.push("/login");
-  };
 
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
@@ -42,12 +35,6 @@ const Topbar = () => {
             <LightModeOutlinedIcon />
           )}
         </IconButton>
-
-        <Box display="grid" flexDirection="column">
-          <IconButton onClick={handleLogout}>
-            <ExitToApp />
-          </IconButton>
-        </Box>
       </Box>
     </Box>
   );

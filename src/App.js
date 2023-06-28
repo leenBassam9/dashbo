@@ -21,6 +21,7 @@ function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
   const isAuthenticated = localStorage.getItem("jwtToken") !== null;
+  const user = { id: "someUserId" }; // Define the user object or fetch user data
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -35,7 +36,10 @@ function App() {
                 <Topbar setIsSidebar={setIsSidebar} />
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
-                  <Route path="/profile" element={<Profile />} />
+                  <Route
+                    path="/profile"
+                    element={<Profile userId={user.id} />}
+                  />
                   <Route path="/users" element={<Users />} />
                   <Route path="/admins" element={<Admins />} />
 

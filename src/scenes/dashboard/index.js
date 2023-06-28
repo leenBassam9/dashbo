@@ -97,7 +97,7 @@ const Dashboard = () => {
           }}
         >
           <StatBox
-            subtitle="Messages Sent"
+            title="Messages Sent"
             progress="0.90"
             icon={
               <MessageIcon
@@ -107,11 +107,8 @@ const Dashboard = () => {
                 }}
               />
             }
+            value={messages}
           />
-
-          <Typography mr={"20px"} fontSize={"20px"}>
-            {messages}
-          </Typography>
         </Box>
 
         <Box
@@ -129,7 +126,7 @@ const Dashboard = () => {
           }}
         >
           <StatBox
-            subtitle="Today Transactions"
+            title="Today Transactions"
             icon={
               <CalendarTodayIcon
                 sx={{
@@ -138,11 +135,8 @@ const Dashboard = () => {
                 }}
               />
             }
+            value={count}
           />
-
-          <Typography mr={"20px"} fontSize={"20px"}>
-            {count}
-          </Typography>
         </Box>
 
         <Box
@@ -160,7 +154,7 @@ const Dashboard = () => {
           }}
         >
           <StatBox
-            subtitle="New Visitors"
+            title="New Visitors"
             icon={
               <SentimentSatisfiedAltIcon
                 sx={{
@@ -169,11 +163,8 @@ const Dashboard = () => {
                 }}
               />
             }
+            value={visitors}
           />
-
-          <Typography mr={"20px"} fontSize={"20px"}>
-            {visitors}
-          </Typography>
         </Box>
 
         {/* ROW 2 */}

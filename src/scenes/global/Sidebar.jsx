@@ -13,12 +13,14 @@ import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+import LogoutIcon from "@mui/icons-material/Logout";
 import "../../index.css";
+ 
 import React from "react";
 const Item = ({ title, to, icon, selected, setSelected, onClose }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
   return (
     <MenuItem
       active={selected === title}
@@ -48,7 +50,9 @@ const Sidebar = () => {
   const handleClose = () => {
     setIsCollapsed(true);
   };
-
+  const handleLogout = () => {
+    localStorage.removeItem("jwtToken");
+  };
   return (
     <Box
       sx={{
@@ -225,10 +229,20 @@ const Sidebar = () => {
                 setSelected={setSelected}
                 onClose={handleClose}
               />
-              <Item
+              {/* <Item
                 title="Geography Chart"
                 to="/geography"
                 icon={<MapOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+                onClose={handleClose}
+              /> */}
+
+              <Item
+                title="Log Out"
+                to="/"
+                onClick={handleLogout}
+                icon={<LogoutIcon />}
                 selected={selected}
                 setSelected={setSelected}
                 onClose={handleClose}

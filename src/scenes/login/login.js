@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Link,
   Typography,
   IconButton,
   Button,
@@ -9,12 +8,13 @@ import {
   InputAdornment,
   TextField,
   Avatar,
-  Container,
 } from "@mui/material";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+
+import "../login/login.css"; // import the CSS file
 
 const LoginComponent = () => {
   const [values, setValues] = useState({
@@ -28,10 +28,7 @@ const LoginComponent = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Clear any previous error messages
     setError("");
-
     fetch("http://127.0.0.1:8000/api/login", {
       method: "POST",
       headers: {
@@ -59,7 +56,6 @@ const LoginComponent = () => {
         setError(err.message);
       });
   };
-
   const handlePassVisibility = () => {
     setValues({
       ...values,
@@ -68,22 +64,8 @@ const LoginComponent = () => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-      }}
-    >
-      <Paper
-        elevation={4}
-        style={{
-          padding: "2rem",
-          width: "50%",
-          maxWidth: "600px",
-        }}
-      >
+    <Grid justifyContent={"center"} alignItems={"center"} container>
+      <Paper elevation={4} className="login-paper">
         <Grid align="center">
           <Avatar
             style={{
@@ -160,7 +142,7 @@ const LoginComponent = () => {
           </Button>
         </form>
       </Paper>
-    </div>
+    </Grid>
   );
 };
 
