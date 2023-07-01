@@ -10,10 +10,9 @@ import Profile from "./scenes/profile";
 import Login from "./scenes/login/login";
 import Admins from "./scenes/Admins";
 // CHARTS
-import BarChartExample from "./scenes/bar";
-import Line from "./scenes/line";
-import Pie from "./scenes/pie";
-import Geography from "./scenes/geography";
+import BarChart from "./components/BarChart";
+import PieChart from "./components/PieChart";
+import LineChart from "./components/LineChart";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 
@@ -45,10 +44,9 @@ function App() {
 
                   <Route path="/posts" element={<Posts />} />
                   <Route path="/form" element={<Form />} />
-                  <Route path="/bar" element={<BarChartExample />} />
-                  <Route path="/pie" element={<Pie />} />
-                  <Route path="/line" element={<Line />} />
-                  <Route path="/geography" element={<Geography />} />
+                  <Route path="/barchart" element={<BarChart />} />
+                  <Route path="/piechart" element={<PieChart />} />
+                  <Route path="/linechart" element={<LineChart />} />
                   <Route path="*" element={<h1>Page Not Found</h1>} />
                 </Routes>
               </main>

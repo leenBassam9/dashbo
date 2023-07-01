@@ -42,7 +42,7 @@ const Posts = () => {
     {
       field: "title",
       headerName: "Title",
-      width: 200,
+      width: 100,
     },
 
     {
@@ -79,7 +79,7 @@ const Posts = () => {
   };
 
   return (
-    <Box m="20px">
+    <Box m="10px">
       <Header title="POSTS" subtitle="Managing the Posts " />
       <Box
         m="40px 0 0 0"
@@ -92,10 +92,10 @@ const Posts = () => {
             borderBottom: "none",
           },
           "& .name-column--cell": {
-            color: colors.greenAccent[300],
+            color: colors.primary[300],
           },
           "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
+            backgroundColor: colors.primary[700],
             borderBottom: "none",
           },
           "& .MuiDataGrid-virtualScroller": {
@@ -103,10 +103,10 @@ const Posts = () => {
           },
           "& .MuiDataGrid-footerContainer": {
             borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
+            backgroundColor: colors.primary[700],
           },
           "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
+            color: `${colors.primary[200]} !important`,
           },
         }}
       >

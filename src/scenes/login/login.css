@@ -2,10 +2,11 @@
   padding: 2rem;
   width: 100%;
   max-width: 600px;
+  background-color: rgb(98, 104, 99) !important;
 }
 
 @media (min-width: 400px) {
   .login-paper {
-    width: 40%;
+    width: 30%;
   }
 }

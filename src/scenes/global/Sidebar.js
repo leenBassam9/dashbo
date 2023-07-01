@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -13,10 +13,12 @@ import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import LogoutIcon from "@mui/icons-material/Logout";
+
 import "../../index.css";
- 
+import axios from "axios";
 import React from "react";
+import profile from "../../img/profile.png";
+import "../global/sidebar.css";
 const Item = ({ title, to, icon, selected, setSelected, onClose }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -50,9 +52,31 @@ const Sidebar = () => {
   const handleClose = () => {
     setIsCollapsed(true);
   };
-  const handleLogout = () => {
-    localStorage.removeItem("jwtToken");
-  };
+  const [name, getName] = useState("");
+  const [image, getImage] = useState("");
+  useEffect(() => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+      },
+    };
+    axios
+      .get("http://127.0.0.1:8000/api/getmyprofile", config)
+      .then((response) => {
+        let { user_name, user_image } = response.data.data[0];
+        if (user_image === "http://127.0.0.1:8000/storage") {
+          user_image = profile;
+        }
+        getName(user_name);
+        getImage(user_image.replace("/storage", ""));
+        console.log(user_image);
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error("Error:", error);
+      });
+  }, []);
+
   return (
     <Box
       sx={{
@@ -63,7 +87,7 @@ const Sidebar = () => {
           backgroundColor: "transparent !important",
         },
         "& .pro-inner-item": {
-          padding: "5px 35px 5px 20px !important",
+          padding: "20px 35px 5px 20px !important",
         },
         "& .pro-inner-item:hover": {
           color: "#868dfb !important",
@@ -93,7 +117,7 @@ const Sidebar = () => {
                   ml="15px"
                 >
                   <Typography variant="h3" color={colors.grey[100]}>
-                    ADMINIS
+                    Admin
                   </Typography>
                   <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                     <MenuOutlinedIcon />
@@ -105,9 +129,8 @@ const Sidebar = () => {
             {!isCollapsed && (
               <Box mb="25px">
                 <Box display="flex" justifyContent="center" alignItems="center">
-                  {/* <a href="/profile"> */}
                   <img
-                    src={`../../assets/user.png`}
+                    src={image}
                     alt="progile-pic."
                     width="100px"
                     height="100px"
@@ -122,7 +145,7 @@ const Sidebar = () => {
                     fontWeight="bold"
                     sx={{ m: "10px 0 0 0" }}
                   >
-                    Leen Bassam
+                    {name}
                   </Typography>
 
                   {/* <Typography variant="h5" color={colors.greenAccent[600]}>
@@ -134,17 +157,17 @@ const Sidebar = () => {
 
             <Box paddingLeft={isCollapsed ? undefined : "10%"}>
               <Item
-                title="Profile"
-                to="/profile"
-                icon={<PersonOutlinedIcon />}
+                title="Dashboard"
+                to="/"
+                icon={<HomeOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
                 onClose={handleClose}
               />
               <Item
-                title="Dashboard"
-                to="/"
-                icon={<HomeOutlinedIcon />}
+                title="Profile"
+                to="/profile"
+                icon={<PersonOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
                 onClose={handleClose}
@@ -157,14 +180,7 @@ const Sidebar = () => {
               >
                 Data
               </Typography>
-              <Item
-                title="Manage Team"
-                to="/team"
-                icon={<PeopleOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-                onClose={handleClose}
-              />
+
               <Item
                 title="Manage Users "
                 to="/users"
@@ -187,27 +203,11 @@ const Sidebar = () => {
                 color={colors.grey[300]}
                 sx={{ m: "15px 0 5px 20px" }}
               >
-                Pages
-              </Typography>
-              <Item
-                title="Add New Admin"
-                to="/form"
-                icon={<PersonOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-                onClose={handleClose}
-              />
-
-              <Typography
-                variant="h6"
-                color={colors.grey[300]}
-                sx={{ m: "15px 0 5px 20px" }}
-              >
                 Charts
               </Typography>
               <Item
                 title="Bar Chart"
-                to="/bar"
+                to="/barchart"
                 icon={<BarChartOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
@@ -215,7 +215,7 @@ const Sidebar = () => {
               />
               <Item
                 title="Pie Chart"
-                to="/pie"
+                to="/piechart"
                 icon={<PieChartOutlineOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
@@ -223,26 +223,8 @@ const Sidebar = () => {
               />
               <Item
                 title="Line Chart"
-                to="/line"
+                to="/linechart"
                 icon={<TimelineOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-                onClose={handleClose}
-              />
-              {/* <Item
-                title="Geography Chart"
-                to="/geography"
-                icon={<MapOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-                onClose={handleClose}
-              /> */}
-
-              <Item
-                title="Log Out"
-                to="/"
-                onClick={handleLogout}
-                icon={<LogoutIcon />}
                 selected={selected}
                 setSelected={setSelected}
                 onClose={handleClose}

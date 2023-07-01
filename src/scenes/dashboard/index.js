@@ -1,79 +1,51 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
-
+import { Box, Typography, useTheme } from "@mui/material";
 import MessageIcon from "@mui/icons-material/Message";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
-
-import Header from "../../components/Header";
 import LineChart from "../../components/LineChart";
-import GeographyChart from "../../components/GeographyChart";
-import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
-import ProgressCircle from "../../components/ProgressCircle";
 import { tokens } from "../../theme";
 
 const Dashboard = () => {
-  const [t, setT] = useState([]);
-  const [count, setCount] = useState("");
-  const [visitors, setVisitors] = useState("");
-  const [messages, setMessages] = useState("");
+  const [transactionList, getTransactionList] = useState([]);
+  const [postCount, getPostCount] = useState("");
+  const [visitors, getVisitors] = useState("");
+  const [messagesCount, getMessageCount] = useState("");
 
   useEffect(() => {
-    const fetchRecentTransactions = async () => {
-      const response = await fetch(
-        "http://127.0.0.1:8000/api/RecentTransactions",
-        {
-          method: "GET",
-        }
-      );
-      const data = await response.json();
-      setT(data.data);
-    };
-
-    const fetchPostCount = async () => {
-      const response = await fetch("http://127.0.0.1:8000/api/countPosts", {
-        method: "GET",
-      });
-      const data = await response.json();
-      setCount(data.data);
-    };
-
-    const fetchVisitors = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/visitors");
-        setVisitors(response.data);
+        const [
+          transactionsResponse,
+          postCountResponse,
+          visitorsResponse,
+          messageCountResponse,
+        ] = await Promise.all([
+          axios.get("http://127.0.0.1:8000/api/RecentTransactions"),
+          axios.get("http://127.0.0.1:8000/api/countPosts"),
+          axios.get("http://127.0.0.1:8000/api/visitors"),
+          axios.get("http://127.0.0.1:8000/api/CountMsg"),
+        ]);
+
+        getTransactionList(transactionsResponse.data.data);
+        getPostCount(postCountResponse.data.data);
+        getVisitors(visitorsResponse.data);
+        getMessageCount(messageCountResponse.data.data);
       } catch (error) {
         console.error(error);
       }
     };
 
-    const fetchMessageCount = async () => {
-      try {
-        const response = await axios.get("http://127.0.0.1:8000/api/CountMsg");
-        setMessages(response.data.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchRecentTransactions();
-    fetchPostCount();
-    fetchVisitors();
-    fetchMessageCount();
+    fetchData();
   }, []);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   return (
-    <Box m="15px">
-      {/* HEADER */}
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="Dakesh Dashboard" subtitle="Welcome to your dashboard" />
-      </Box>
-
+    <Box m="35px">
       {/* GRID & CHARTS */}
       <Box
         display="grid"
@@ -107,7 +79,7 @@ const Dashboard = () => {
                 }}
               />
             }
-            value={messages}
+            value={messagesCount}
           />
         </Box>
 
@@ -135,7 +107,7 @@ const Dashboard = () => {
                 }}
               />
             }
-            value={count}
+            value={postCount}
           />
         </Box>
 
@@ -172,29 +144,27 @@ const Dashboard = () => {
           gridColumn="span 8"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
+          // display="flex"
+          // flexDirection="column"
+          // justifyContent="center"
+          // alignItems="center"
         >
-          <Box
-            mt="25px"
-            p="0 30px"
-            display="flex "
-            justifyContent="space-between"
-            alignItems="center"
+          {" "}
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            color={colors.grey[100]}
+            ml={"10px"}
           >
-            <Box>
-              <Typography
-                variant="h5"
-                fontWeight="600"
-                color={colors.grey[100]}
-              >
-                Revenue Generated
-              </Typography>
-              <div>{/* <BarChartExa /> */}</div>
+            Item Exchanged By Month
+          </Typography>
+          <Box>
+            <Box width="100%" maxWidth="1000px" height="45vh">
+              <LineChart />
             </Box>
           </Box>
-          <Box height="250px" m="-20px 0 0 0">
-            <LineChart isDashboard={true} />
-          </Box>
         </Box>
+
         <Box
           gridColumn="span 4"
           gridRow="span 2"
@@ -216,9 +186,10 @@ const Dashboard = () => {
               Recent Transactions
             </Typography>
           </Box>
-          {t.map((transaction, i) => (
+          {transactionList.map((transaction, i) => (
             <Box
-              key={`${transaction.id}-${i}`}
+              key={`${transaction.id}-${i}`} // to put ids to each transaction
+              //(its id-uniques new "i")
               display="flex"
               justifyContent="space-between"
               alignItems="center"
@@ -231,8 +202,6 @@ const Dashboard = () => {
                 },
               }}
               height={"fit-content"}
-              // width={"fit-content"}
-              //
             >
               <Box maxHeight={"80%"}>
                 <Typography color={colors.grey[100]}>
@@ -243,8 +212,6 @@ const Dashboard = () => {
             </Box>
           ))}
         </Box>
-
-        {/* ROW 3 */}
       </Box>
     </Box>
   );

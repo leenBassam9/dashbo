@@ -1,4 +1,11 @@
-import { Box } from "@mui/material";
+import {
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import axios from "axios";
@@ -9,14 +16,16 @@ import { IconButton } from "@material-ui/core";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const Users = () => {
-  const [users, getUser] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   const getAllUsers = async () => {
     try {
       const response = await axios.get(
         "http://127.0.0.1:8000/api/ShowUserProfile"
       );
-      getUser(response.data.data);
+      setUsers(response.data.data);
     } catch (error) {
       console.log(error);
     }
@@ -30,9 +39,26 @@ const Users = () => {
     console.log(id);
     try {
       await axios.delete(`http://127.0.0.1:8000/api/destroy/${id}`);
-      getUser((prevUsers) => prevUsers.filter((user) => user.id !== id));
+      setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
     } catch (error) {
       console.error(error);
+    }
+    setConfirmDeleteOpen(false);
+  };
+
+  const handleDeleteClick = (id) => {
+    setSelectedUser(id);
+    setConfirmDeleteOpen(true);
+  };
+
+  const handleCancelDelete = () => {
+    setSelectedUser(null);
+    setConfirmDeleteOpen(false);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedUser) {
+      deleteUser(selectedUser);
     }
   };
 
@@ -65,7 +91,7 @@ const Users = () => {
         <IconButton
           color="secondary"
           size="small"
-          onClick={() => deleteUser(params.row.id)}
+          onClick={() => handleDeleteClick(params.row.id)}
         >
           <DeleteIcon />
         </IconButton>
@@ -79,34 +105,11 @@ const Users = () => {
       <Box
         m="40px 0 0 0"
         height="75vh"
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
-          },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
-          },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[400],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
-          },
-          "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
-          },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${colors.grey[100]} !important`,
-          },
-        }}
+        sx={
+          {
+            /* Styles for DataGrid */
+          }
+        }
       >
         <DataGrid
           rows={users}
@@ -114,6 +117,19 @@ const Users = () => {
           components={{ Toolbar: GridToolbar }}
         />
       </Box>
+
+      <Dialog open={confirmDeleteOpen} onClose={handleCancelDelete}>
+        <DialogTitle>Confirmation</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this user?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete}>Cancel</Button>
+          <Button onClick={handleConfirmDelete} autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

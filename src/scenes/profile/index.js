@@ -9,6 +9,7 @@ const Profile = () => {
   const [updatePassword, setUpdatePassword] = useState(false);
   const [updateName, setUpdateName] = useState(false);
   const [avatar, setAvatar] = useState(null);
+  const [image, setImage] = useState(null);
   const jwtToken = localStorage.getItem("jwtToken");
 
   useEffect(() => {
@@ -37,6 +38,7 @@ const Profile = () => {
   const handleAvatarChange = (event) => {
     const selectedFile = event.target.files[0];
     setAvatar(URL.createObjectURL(selectedFile));
+    setImage(selectedFile);
   };
 
   const handleNameChange = (e) => {
@@ -61,9 +63,15 @@ const Profile = () => {
 
       // Update user profile information
       if (Object.keys(updateData).length > 0) {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+        };
         const response = await axios.put(
-          `http://127.0.0.1:8000/api/updateUserProfile/${newId}`,
-          updateData
+          `http://127.0.0.1:8000/api/updateUserProfile`,
+          updateData,
+          config
         );
         console.log(response.data);
       }
@@ -71,11 +79,18 @@ const Profile = () => {
       // Upload profile picture
       if (avatar) {
         const formData = new FormData();
-        formData.append("profileImage", avatar);
-
+        // formData.append("profileImage", avatar);
+        formData.append("image", image);
+        const config = {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+        };
+        console.log(formData);
         const imageResponse = await axios.post(
           `http://127.0.0.1:8000/api/updateProfileImage`,
-          formData
+          formData,
+          config
         );
         console.log(imageResponse.data);
       }
@@ -84,15 +99,8 @@ const Profile = () => {
     }
   };
 
-  const handleIdChange = (e) => {
-    setNewId(e.target.value);
-  };
-
   const handlePasswordChange = (e) => {
     if (updateName) {
-      alert(
-        "You can only update one field at a time, please refresh the page for new changes"
-      );
       return;
     }
     setNewPassword(e.target.value);
@@ -120,14 +128,6 @@ const Profile = () => {
         />
       </div>
 
-      <TextField
-        label="Your ID"
-        variant="outlined"
-        margin="normal"
-        fullWidth
-        value={newId}
-        onChange={handleIdChange}
-      />
       <TextField
         label="Name"
         variant="outlined"

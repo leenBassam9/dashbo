@@ -16,7 +16,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 import "../login/login.css"; // import the CSS file
 
-const LoginComponent = () => {
+const Login = () => {
   const [values, setValues] = useState({
     email: "",
     password: "",
@@ -56,6 +56,7 @@ const LoginComponent = () => {
         setError(err.message);
       });
   };
+
   const handlePassVisibility = () => {
     setValues({
       ...values,
@@ -65,21 +66,32 @@ const LoginComponent = () => {
 
   return (
     <Grid justifyContent={"center"} alignItems={"center"} container>
-      <Paper elevation={4} className="login-paper">
+      <Paper
+        elevation={4}
+        className="login-paper"
+        style={{ background: "grey", padding: "2rem" }}
+      >
         <Grid align="center">
           <Avatar
             style={{
               margin: "1rem",
+              backgroundColor: "white",
+              color: "black",
             }}
           >
             <LockOutlinedIcon />
           </Avatar>
-          <h1>Log In</h1>
+          <h1 style={{ color: "white" }}>Log In</h1>
         </Grid>
 
         <form onSubmit={handleSubmit}>
           {error && (
-            <Typography variant="body1" color="error" align="center">
+            <Typography
+              variant="body1"
+              color="error"
+              align="center"
+              style={{ color: "white" }}
+            >
               {error}
             </Typography>
           )}
@@ -91,36 +103,37 @@ const LoginComponent = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <MailOutlineIcon style={{ color: "#999" }} />
+                  <MailOutlineIcon style={{ color: "white" }} />
                 </InputAdornment>
               ),
             }}
             variant="standard"
-            placeholder="Email Adress"
+            placeholder="Email Address"
             type="email"
+            inputProps={{ style: { color: "white" } }}
           />
 
           <TextField
             onChange={(e) => setValues({ ...values, password: e.target.value })}
-            style={{ margin: "0.8rem 0" }}
+            style={{ margin: "0.8rem 0", width: "100%" }}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <LockOutlinedIcon style={{ color: "#999" }} />
+                  <LockOutlinedIcon style={{ color: "white" }} />
                 </InputAdornment>
               ),
               endAdornment: (
                 <InputAdornment
-                  position="end"
+                  position="start"
                   style={{ color: "#999" }}
                   aria-label="toggle-password"
                   edge="end"
                 >
                   <IconButton onClick={handlePassVisibility}>
                     {values.showPassword ? (
-                      <VisibilityIcon />
+                      <VisibilityIcon style={{ color: "white" }} />
                     ) : (
-                      <VisibilityOffIcon />
+                      <VisibilityOffIcon style={{ color: "white" }} />
                     )}
                   </IconButton>
                 </InputAdornment>
@@ -130,13 +143,19 @@ const LoginComponent = () => {
             variant="standard"
             placeholder="Password"
             type={values.showPassword ? "text" : "password"}
+            inputProps={{ style: { color: "white" } }}
           />
 
           <Button
             fullWidth
             variant="outlined"
             type="submit"
-            style={{ color: "#999" }}
+            style={{
+              color: "#999",
+              marginTop: "1rem",
+              borderColor: "white",
+              color: "white",
+            }}
           >
             Log-in
           </Button>
@@ -146,4 +165,4 @@ const LoginComponent = () => {
   );
 };
 
-export default LoginComponent;
+export default Login;
