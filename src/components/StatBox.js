@@ -19,7 +19,7 @@ const StatBox = ({ value, title, icon }) => {
         </Box>
       </Box>
       <Box display="flex" justifyContent="space-between" mt="2px">
-        <Typography variant="h5" sx={{ color: colors.grey[500] }}>
+        <Typography variant="h5" sx={{ color: colors.grey[100] }}>
           {title}
         </Typography>
       </Box>

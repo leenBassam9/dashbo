@@ -2,7 +2,7 @@
   padding: 2rem;
   width: 100%;
   max-width: 600px;
-  background-color: rgb(98, 104, 99) !important;
+  background-color: rgb(98, 104, 99);
 }
 
 @media (min-width: 400px) {

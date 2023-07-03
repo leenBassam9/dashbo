@@ -10,14 +10,12 @@ const Form = () => {
   const [responseMessage, setResponseMessage] = useState("");
 
   const handleFormSubmit = (values) => {
-    // console.log(values);
     values.is_admin = 1;
     console.log(values.is_admin);
 
     axios
       .post("http://127.0.0.1:8000/api/register", values)
       .then((response) => {
-        console.log(response.data);
         setResponseMessage(response.data.message);
       })
       .catch((error) => {

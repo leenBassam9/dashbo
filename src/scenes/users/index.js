@@ -7,10 +7,8 @@ import {
   Button,
 } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { tokens } from "../../theme";
 import axios from "axios";
 import Header from "../../components/Header";
-import { useTheme } from "@mui/material";
 import { useState, useEffect } from "react";
 import { IconButton } from "@material-ui/core";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -19,11 +17,16 @@ const Users = () => {
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-
+  const config = {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+    },
+  };
   const getAllUsers = async () => {
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/ShowUserProfile"
+        "http://127.0.0.1:8000/api/ShowAllUsersProfile",
+        config
       );
       setUsers(response.data.data);
     } catch (error) {
@@ -38,7 +41,7 @@ const Users = () => {
   const deleteUser = async (id) => {
     console.log(id);
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/destroy/${id}`);
+      await axios.delete(`http://127.0.0.1:8000/api/destroy/${id}`, config);
       setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
     } catch (error) {
       console.error(error);
@@ -62,16 +65,12 @@ const Users = () => {
     }
   };
 
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
     {
       field: "name",
       headerName: "Name",
       flex: 1,
-      cellClassName: "name-column--cell",
     },
     {
       field: "email",
@@ -84,8 +83,13 @@ const Users = () => {
       flex: 1,
     },
     {
+      field: "average_rating",
+      headerName: "Rate number",
+      flex: 1,
+    },
+    {
       field: "actions",
-      headerName: "Actions",
+      headerName: "Delete",
       flex: 0.5,
       renderCell: (params) => (
         <IconButton
@@ -101,16 +105,8 @@ const Users = () => {
 
   return (
     <Box m="20px">
-      <Header title="  Users" />
-      <Box
-        m="40px 0 0 0"
-        height="75vh"
-        sx={
-          {
-            /* Styles for DataGrid */
-          }
-        }
-      >
+      <Header title="  Manage Users" />
+      <Box m="7px 0 0 0" height="60vh">
         <DataGrid
           rows={users}
           columns={columns}

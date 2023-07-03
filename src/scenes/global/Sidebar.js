@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -16,9 +16,9 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 
 import "../../index.css";
 import axios from "axios";
-import React from "react";
 import profile from "../../img/profile.png";
 import "../global/sidebar.css";
+
 const Item = ({ title, to, icon, selected, setSelected, onClose }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -69,10 +69,9 @@ const Sidebar = () => {
         }
         getName(user_name);
         getImage(user_image.replace("/storage", ""));
-        console.log(user_image);
+        // console.log(user_image);
       })
       .catch((error) => {
-        // Handle any errors that occurred during the request
         console.error("Error:", error);
       });
   }, []);
@@ -116,9 +115,10 @@ const Sidebar = () => {
                   alignItems="center"
                   ml="15px"
                 >
-                  <Typography variant="h3" color={colors.grey[100]}>
+                  <Typography variant="h1" color={colors.grey[100]}>
                     Admin
                   </Typography>
+
                   <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                     <MenuOutlinedIcon />
                   </IconButton>
@@ -136,7 +136,6 @@ const Sidebar = () => {
                     height="100px"
                     style={{ cursor: "pointer", borderRadius: "50%" }}
                   />
-                  {/* </a> */}
                 </Box>
                 <Box textAlign="center">
                   <Typography
@@ -147,10 +146,6 @@ const Sidebar = () => {
                   >
                     {name}
                   </Typography>
-
-                  {/* <Typography variant="h5" color={colors.greenAccent[600]}>
-                    Admin Manager
-                  </Typography> */}
                 </Box>
               </Box>
             )}
@@ -165,7 +160,7 @@ const Sidebar = () => {
                 onClose={handleClose}
               />
               <Item
-                title="Profile"
+                title="Edit Profile"
                 to="/profile"
                 icon={<PersonOutlinedIcon />}
                 selected={selected}
@@ -175,7 +170,7 @@ const Sidebar = () => {
 
               <Typography
                 variant="h6"
-                color={colors.grey[300]}
+                color={colors.grey[100]}
                 sx={{ m: "15px 0 5px 20px" }}
               >
                 Data
@@ -200,7 +195,7 @@ const Sidebar = () => {
 
               <Typography
                 variant="h6"
-                color={colors.grey[300]}
+                color={colors.grey[100]}
                 sx={{ m: "15px 0 5px 20px" }}
               >
                 Charts
@@ -217,14 +212,6 @@ const Sidebar = () => {
                 title="Pie Chart"
                 to="/piechart"
                 icon={<PieChartOutlineOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-                onClose={handleClose}
-              />
-              <Item
-                title="Line Chart"
-                to="/linechart"
-                icon={<TimelineOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
                 onClose={handleClose}

@@ -1,4 +1,12 @@
-import { Box, useTheme } from "@mui/material";
+import {
+  Box,
+  useTheme,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { useState, useEffect } from "react";
@@ -7,18 +15,27 @@ import Header from "../../components/Header";
 import { IconButton } from "@material-ui/core";
 
 import DeleteIcon from "@mui/icons-material/Delete";
+
 const Posts = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [users, getUser] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState(null);
 
   const getAllUsers = async () => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+      },
+    };
     try {
       const response = await axios.get(
-        "http://127.0.0.1:8000/api/report_count"
+        "http://127.0.0.1:8000/api/report_count",
+        config
       );
-      getUser(response.data.data);
+      setUsers(response.data.data);
     } catch (error) {
       console.log(error);
     }
@@ -31,48 +48,60 @@ const Posts = () => {
   const columns = [
     {
       field: "id",
-      headerName: " ID",
-      width: 50,
+      headerName: "ID",
+      flex: 1,
     },
     {
       field: "user_name",
       headerName: "Name",
-      width: 200,
+      flex: 1,
     },
     {
       field: "title",
       headerName: "Title",
-      width: 100,
+      flex: 1,
     },
-
     {
       field: "report_count",
-      headerName: "report count",
-      width: 100,
+      headerName: "Report Count",
+      flex: 1,
     },
     {
       field: "actions",
-      headerName: "Actions",
+      headerName: "Delete",
       flex: 0.5,
       renderCell: (params) => (
         <IconButton
           color="secondary"
           size="small"
-          onClick={(e) => {
-            e.stopPropagation();
-            deletePost(params.row.id);
-          }}
+          onClick={() => handleDeleteConfirmation(params.row.id)}
         >
           <DeleteIcon />
         </IconButton>
       ),
     },
   ];
-  const deletePost = async (id) => {
-    console.log(id);
+
+  const handleDeleteConfirmation = (id) => {
+    setSelectedPostId(id);
+    setOpenDialog(true);
+  };
+
+  const handleDeletePost = async () => {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+      },
+    };
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/posts/${id}`);
-      getUser((prevUsers) => prevUsers.filter((post) => post.id !== id));
+      await axios.delete(
+        `http://127.0.0.1:8000/api/posts/${selectedPostId}`,
+        config
+      );
+      setUsers((prevUsers) =>
+        prevUsers.filter((post) => post.id !== selectedPostId)
+      );
+      setOpenDialog(false);
     } catch (error) {
       console.error(error);
     }
@@ -80,38 +109,22 @@ const Posts = () => {
 
   return (
     <Box m="10px">
-      <Header title="POSTS" subtitle="Managing the Posts " />
-      <Box
-        m="40px 0 0 0"
-        height="500px"
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
-          },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
-          },
-          "& .name-column--cell": {
-            color: colors.primary[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.primary[700],
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[400],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.primary[700],
-          },
-          "& .MuiCheckbox-root": {
-            color: `${colors.primary[200]} !important`,
-          },
-        }}
-      >
+      <Header title="Manage Posts" />
+      <Box m="7px 0 0 0" height="60vh">
         <DataGrid rows={users} columns={columns} />
       </Box>
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Confirmation</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this post?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+          <Button onClick={handleDeletePost} color="secondary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

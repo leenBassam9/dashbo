@@ -3,9 +3,9 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import axios from "axios";
 
 const Profile = () => {
+  const [userData, setUserData] = useState(null);
   const [newName, setNewName] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [newId, setNewId] = useState("");
   const [updatePassword, setUpdatePassword] = useState(false);
   const [updateName, setUpdateName] = useState(false);
   const [avatar, setAvatar] = useState(null);
@@ -13,25 +13,27 @@ const Profile = () => {
   const jwtToken = localStorage.getItem("jwtToken");
 
   useEffect(() => {
-    const fetchUserId = async () => {
+    const fetchUserProfile = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/login", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${jwtToken}`,
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
-        const userId = data.id; // Assuming the user ID is available in the response
-        setNewId(userId);
+        const response = await axios.get(
+          "http://127.0.0.1:8000/api/getmyprofile",
+          {
+            headers: {
+              Authorization: `Bearer ${jwtToken}`,
+            },
+          }
+        );
+        const userData = response.data.data[0];
+        setUserData(userData);
+        setNewName(userData.user_name);
+        setAvatar(userData.user_image);
       } catch (error) {
         console.error(error);
       }
     };
 
     if (jwtToken) {
-      fetchUserId();
+      fetchUserProfile();
     }
   }, [jwtToken]);
 
@@ -68,8 +70,8 @@ const Profile = () => {
             Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
           },
         };
-        const response = await axios.put(
-          `http://127.0.0.1:8000/api/updateUserProfile`,
+        const response = axios.post(
+          "http://127.0.0.1:8000/api/updateUserProfile",
           updateData,
           config
         );
@@ -79,7 +81,6 @@ const Profile = () => {
       // Upload profile picture
       if (avatar) {
         const formData = new FormData();
-        // formData.append("profileImage", avatar);
         formData.append("image", image);
         const config = {
           headers: {
@@ -88,7 +89,7 @@ const Profile = () => {
         };
         console.log(formData);
         const imageResponse = await axios.post(
-          `http://127.0.0.1:8000/api/updateProfileImage`,
+          "http://127.0.0.1:8000/api/updateProfileImage",
           formData,
           config
         );
@@ -109,48 +110,56 @@ const Profile = () => {
 
   return (
     <Box p={"50px"} component="form" onSubmit={handleSubmit}>
-      <Typography variant="h2">Edit Profile</Typography>
+      {userData && (
+        <Box>
+          <Typography variant="h2">Edit Profile</Typography>
 
-      <div>
-        <label htmlFor="avatar-upload">
-          <img
-            src={avatar}
-            alt="Avatar"
-            style={{ width: "100px", height: "100px", borderRadius: "50%" }}
+          <div>
+            <label htmlFor="avatar-upload">
+              <img
+                src={avatar}
+                alt="Avatar"
+                style={{
+                  width: "100px",
+                  height: "100px",
+                  borderRadius: "50%",
+                }}
+              />
+            </label>
+            <input
+              accept="image/*"
+              id="avatar-upload"
+              type="file"
+              onChange={handleAvatarChange}
+              style={{ display: "none" }}
+            />
+          </div>
+
+          <TextField
+            label="Name"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            value={newName}
+            onChange={handleNameChange}
           />
-        </label>
-        <input
-          accept="image/*"
-          id="avatar-upload"
-          type="file"
-          onChange={handleAvatarChange}
-          style={{ display: "none" }}
-        />
-      </div>
 
-      <TextField
-        label="Name"
-        variant="outlined"
-        margin="normal"
-        fullWidth
-        value={newName}
-        onChange={handleNameChange}
-      />
+          <TextField
+            label="Password"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            value={newPassword}
+            onChange={handlePasswordChange}
+          />
 
-      <TextField
-        label="Password"
-        variant="outlined"
-        margin="normal"
-        fullWidth
-        value={newPassword}
-        onChange={handlePasswordChange}
-      />
-
-      <Box display="flex" justifyContent="center">
-        <Button type="submit" variant="contained" color="primary">
-          Save Changes
-        </Button>
-      </Box>
+          <Box display="flex" justifyContent="center">
+            <Button type="submit" variant="contained" color="primary">
+              Save Changes
+            </Button>
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 };

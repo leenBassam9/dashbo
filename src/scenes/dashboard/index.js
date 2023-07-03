@@ -2,36 +2,39 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Box, Typography, useTheme } from "@mui/material";
 import MessageIcon from "@mui/icons-material/Message";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import CategoryIcon from "@mui/icons-material/Category";
 import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
-import LineChart from "../../components/LineChart";
 import StatBox from "../../components/StatBox";
 import { tokens } from "../../theme";
+import PieChart from "../../components/PieChart";
 
 const Dashboard = () => {
   const [transactionList, getTransactionList] = useState([]);
-  const [postCount, getPostCount] = useState("");
   const [visitors, getVisitors] = useState("");
+  const [postCount, getPostCount] = useState("");
   const [messagesCount, getMessageCount] = useState("");
 
   useEffect(() => {
+    // Fetch data when component mounts
     const fetchData = async () => {
       try {
+        // Make multiple API requests in parallel using Promise.all()
         const [
           transactionsResponse,
-          postCountResponse,
           visitorsResponse,
+          categoryCountResponse,
           messageCountResponse,
         ] = await Promise.all([
-          axios.get("http://127.0.0.1:8000/api/RecentTransactions"),
-          axios.get("http://127.0.0.1:8000/api/countPosts"),
-          axios.get("http://127.0.0.1:8000/api/visitors"),
+          axios.get("http://127.0.0.1:8000/api/NewUsers"),
+          axios.get("http://127.0.0.1:8000/api/CountAllUsers"),
+          axios.get("http://127.0.0.1:8000/api/CountAllCategories"),
           axios.get("http://127.0.0.1:8000/api/CountMsg"),
         ]);
 
-        getTransactionList(transactionsResponse.data.data);
-        getPostCount(postCountResponse.data.data);
-        getVisitors(visitorsResponse.data);
+        // Update state with the fetched data
+        getTransactionList(transactionsResponse.data);
+        getVisitors(visitorsResponse.data.data);
+        getPostCount(categoryCountResponse.data.data);
         getMessageCount(messageCountResponse.data.data);
       } catch (error) {
         console.error(error);
@@ -45,8 +48,7 @@ const Dashboard = () => {
   const colors = tokens(theme.palette.mode);
 
   return (
-    <Box m="35px">
-      {/* GRID & CHARTS */}
+    <Box m="50px">
       <Box
         display="grid"
         gridTemplateColumns="repeat(12, 1fr)"
@@ -70,11 +72,10 @@ const Dashboard = () => {
         >
           <StatBox
             title="Messages Sent"
-            progress="0.90"
             icon={
               <MessageIcon
                 sx={{
-                  color: colors.greenAccent[600],
+                  color: colors.grey[100],
                   fontSize: "26px",
                 }}
               />
@@ -98,11 +99,11 @@ const Dashboard = () => {
           }}
         >
           <StatBox
-            title="Today Transactions"
+            title="Category"
             icon={
-              <CalendarTodayIcon
+              <CategoryIcon
                 sx={{
-                  color: colors.greenAccent[600],
+                  color: colors.grey[100],
                   fontSize: "26px",
                 }}
               />
@@ -126,11 +127,11 @@ const Dashboard = () => {
           }}
         >
           <StatBox
-            title="New Visitors"
+            title="Users Count"
             icon={
               <SentimentSatisfiedAltIcon
                 sx={{
-                  color: colors.greenAccent[600],
+                  color: colors.grey[100],
                   fontSize: "30px",
                 }}
               />
@@ -144,23 +145,28 @@ const Dashboard = () => {
           gridColumn="span 8"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
-          // display="flex"
-          // flexDirection="column"
-          // justifyContent="center"
-          // alignItems="center"
         >
-          {" "}
           <Typography
-            variant="h5"
-            fontWeight="600"
+            variant="h4"
             color={colors.grey[100]}
-            ml={"10px"}
+            ml={"15px"}
+            mt={"15px"}
           >
-            Item Exchanged By Month
+            Users in Governorates
+            <Typography color={colors.grey[100]}>
+              This chart displays the distribution of users across different
+              governorates.
+            </Typography>
           </Typography>
           <Box>
-            <Box width="100%" maxWidth="1000px" height="45vh">
-              <LineChart />
+            <Box
+              width="60%"
+              maxWidth="500px"
+              height="45vh"
+              ml="90px"
+              mt={"50px"}
+            >
+              <PieChart />
             </Box>
           </Box>
         </Box>
@@ -183,7 +189,7 @@ const Dashboard = () => {
             p="15px"
           >
             <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Recent Transactions
+              Recent Users
             </Typography>
           </Box>
           {transactionList.map((transaction, i) => (
@@ -205,10 +211,14 @@ const Dashboard = () => {
             >
               <Box maxHeight={"80%"}>
                 <Typography color={colors.grey[100]}>
-                  {transaction.user.name}
+                  {transaction.name}
                 </Typography>
               </Box>
-              <Box color={colors.grey[100]}>{transaction.title}</Box>
+              <Box color={colors.grey[100]}>
+                {new Date(transaction.created_at).toLocaleString("en-US", {
+                  month: "long",
+                })}
+              </Box>
             </Box>
           ))}
         </Box>

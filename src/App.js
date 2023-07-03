@@ -8,11 +8,9 @@ import Users from "./scenes/users";
 import Form from "./scenes/form";
 import Profile from "./scenes/profile";
 import Login from "./scenes/login/login";
-import Admins from "./scenes/Admins";
 // CHARTS
 import BarChart from "./components/BarChart";
 import PieChart from "./components/PieChart";
-import LineChart from "./components/LineChart";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 
@@ -40,13 +38,11 @@ function App() {
                     element={<Profile userId={user.id} />}
                   />
                   <Route path="/users" element={<Users />} />
-                  <Route path="/admins" element={<Admins />} />
-
                   <Route path="/posts" element={<Posts />} />
                   <Route path="/form" element={<Form />} />
                   <Route path="/barchart" element={<BarChart />} />
                   <Route path="/piechart" element={<PieChart />} />
-                  <Route path="/linechart" element={<LineChart />} />
+                  {/* <Route path="/linechart" element={<LineChart />} /> */}
                   <Route path="*" element={<h1>Page Not Found</h1>} />
                 </Routes>
               </main>

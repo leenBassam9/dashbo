@@ -15,12 +15,12 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 import "../login/login.css"; // import the CSS file
+import axios from "axios";
 
 const Login = () => {
   const [values, setValues] = useState({
     email: "",
     password: "",
-    token: "",
     showPassword: false,
   });
 
@@ -29,28 +29,22 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
-    fetch("http://127.0.0.1:8000/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+
+    axios
+      .post("http://127.0.0.1:8000/api/login", {
         email: values.email,
         password: values.password,
-      }),
-    })
-      .then((res) => {
-        if (!res.ok) {
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          // Store the JWT token in the user's browser
+          localStorage.setItem("jwtToken", response.data.authorisation.token);
+
+          // Redirect the user to the home page or dashboard
+          window.location.href = "/";
+        } else {
           throw new Error("Email or password is incorrect");
         }
-        return res.json();
-      })
-      .then((data) => {
-        // Store the JWT token in the user's browser
-        localStorage.setItem("jwtToken", data.authorisation.token);
-
-        // Redirect the user to the home page or dashboard
-        window.location.href = "/";
       })
       .catch((err) => {
         setError(err.message);
@@ -58,14 +52,14 @@ const Login = () => {
   };
 
   const handlePassVisibility = () => {
-    setValues({
-      ...values,
-      showPassword: !values.showPassword,
-    });
+    setValues((prevValues) => ({
+      ...prevValues,
+      showPassword: !prevValues.showPassword,
+    }));
   };
 
   return (
-    <Grid justifyContent={"center"} alignItems={"center"} container>
+    <Grid justifyContent="center" alignItems="center" container>
       <Paper
         elevation={4}
         className="login-paper"
@@ -81,7 +75,9 @@ const Login = () => {
           >
             <LockOutlinedIcon />
           </Avatar>
-          <h1 style={{ color: "white" }}>Log In</h1>
+          <Typography variant="h1" style={{ color: "white" }}>
+            Log In
+          </Typography>
         </Grid>
 
         <form onSubmit={handleSubmit}>
@@ -97,7 +93,12 @@ const Login = () => {
           )}
 
           <TextField
-            onChange={(e) => setValues({ ...values, email: e.target.value })}
+            onChange={(e) =>
+              setValues((prevValues) => ({
+                ...prevValues,
+                email: e.target.value,
+              }))
+            }
             style={{ margin: "0.8rem 0" }}
             fullWidth
             InputProps={{
@@ -114,7 +115,12 @@ const Login = () => {
           />
 
           <TextField
-            onChange={(e) => setValues({ ...values, password: e.target.value })}
+            onChange={(e) =>
+              setValues((prevValues) => ({
+                ...prevValues,
+                password: e.target.value,
+              }))
+            }
             style={{ margin: "0.8rem 0", width: "100%" }}
             InputProps={{
               startAdornment: (
